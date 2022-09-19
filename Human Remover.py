@@ -4,7 +4,7 @@ import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_selfie_segmentation = mp.solutions.selfie_segmentation
 
-BG_COLOR = (192, 192, 192) # Gray
+BG_COLOR = (192, 192, 192) #gray
 cap = cv2.VideoCapture(0)
 bg_image = None
 last_image = None
@@ -20,24 +20,24 @@ with mp_selfie_segmentation.SelfieSegmentation(model_selection=1) as selfie_segm
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.1
-        if last_image is None:
+        if last_image is None: #sets the first instance of the background to the capture
             last_image = image
 
-        if bg_image is None:
-            
+        if bg_image is None: #sets bg_image to a gray square the size of the camera capture  
             bg_image = np.zeros(image.shape, dtype=np.uint8)
             bg_image[:] = BG_COLOR
 
+        #filters based on bg_color (segmentation mask)
         bg_image = np.where(last_image != BG_COLOR, last_image, bg_image)
         last_image = np.where(bg_image != BG_COLOR , bg_image, last_image)
-        
         output_image = np.where(condition, bg_image, image)
-        last_image = output_image  #changed from image to output_image - now gray
+        
+        #creates the new background and shows the images
+        last_image = output_image  
         cv2.imshow('Human Remover', output_image)
         cv2.imshow('Unremoved', image)
-        #cv2.imshow('bg_image', bg_image) # were used for testing
-        #cv2.imshow('last_image', last_image) # were used for testing 
         
+        #closes windows if you hit ESC
         if cv2.waitKey(1) & 0xFF == 27:
             break
 cap.release()
