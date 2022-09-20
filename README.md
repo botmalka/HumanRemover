@@ -6,3 +6,5 @@ This project uses [OpenCV](https://opencv.org/) and [Mediapipe's selfie segmenta
 
 
 ![Image showing a human edited out of a video](NowYouSeeMe.gif)
+
+![Image showing removal with mask](WithMask.gif)
